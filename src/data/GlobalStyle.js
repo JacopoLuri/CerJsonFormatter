@@ -1,5 +1,4 @@
-  
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
 *{
@@ -11,5 +10,11 @@ export const GlobalStyle = createGlobalStyle`
 }
 &::-webkit-scrollbar{
   display:none
+}
+body {
+  background-color: wheat;
+}
+button:hover{
+  cursor: pointer;
 }
 `;
