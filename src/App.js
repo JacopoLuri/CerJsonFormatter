@@ -1,5 +1,5 @@
-import { useContext, useEffect } from 'react';
-import { Context } from './context/Context';
+import { useContext, useEffect, useRef } from "react";
+import { Context } from "./context/Context";
 
 const App = () => {
   const context = useContext(Context);
@@ -12,29 +12,43 @@ const App = () => {
     objR,
     setObjR,
     formattedCers,
-    setFormattedCers
+    setFormattedCers,
   } = context;
 
-  useEffect(() => (setFormattedCers(false)), [cers, objD, objR, setFormattedCers])
+  const textAreaRef = useRef(null);
+
+  useEffect(
+    () => setFormattedCers(false),
+    [cers, objD, objR, setFormattedCers]
+  );
+
+  function copyToClipboard(e) {
+    textAreaRef.current.select();
+    document.execCommand("copy");
+  }
 
   return (
-    <main style={{ padding: '50px' }}>
+    <main style={{ padding: "50px" }}>
       <h1>CER JSON Formatter v1.0</h1>
       <p>
-        Inserisci i codici CER in un file excel, uno per ogni riga, non mettere virgole o virgolette.
+        Inserisci i codici CER in un file excel, uno per ogni riga, non mettere
+        virgole o virgolette.
         <br />
         Quindi copiali qui sotto.
         <br />
-        Saranno automaticamente formattati in questo modo: 010101\n020103\n040503\n etc.
+        Saranno automaticamente formattati in questo modo:
+        010101\n020103\n040503\n etc.
         <br />
-        Se vuoi inserirli manualmente inserisci tutti i numeri attaccati senza lasciare spazi: 010101020202030303 etc.
+        Se vuoi inserirli manualmente inserisci tutti i numeri attaccati senza
+        lasciare spazi: 010101020202030303 etc.
         <br />
-        In entrambi i casi ASSICURATI che ogni CER sia composto da esattamente da 6 cifre!
+        In entrambi i casi ASSICURATI che ogni CER sia composto da esattamente
+        da 6 cifre!
       </p>
       <textarea
         placeholder="Codici CER"
-        style={{ width: '30vw', height: '20vh' }}
-        onChange={e => getCers(e.target.value)}
+        style={{ width: "30vw", height: "20vh" }}
+        onChange={(e) => getCers(e.target.value)}
       />
       <br />
       <label for="D">
@@ -42,7 +56,7 @@ const App = () => {
       </label>
       <select
         name="D"
-        onChange={e => setObjD({ ...objD, firstD: e.target.value })}
+        onChange={(e) => setObjD({ ...objD, firstD: e.target.value })}
       >
         <option value="" />
         <option value="D1">D1</option>
@@ -62,12 +76,10 @@ const App = () => {
         <option value="D15">D15</option>
       </select>
       <br />
-      <label for="D">
-        Scegli la seconda destinazione D, se presente:
-      </label>
+      <label for="D">Scegli la seconda destinazione D, se presente:</label>
       <select
         name="D"
-        onChange={e => setObjD({ ...objD, secondD: e.target.value })}
+        onChange={(e) => setObjD({ ...objD, secondD: e.target.value })}
       >
         <option value="" />
         <option value="D1">D1</option>
@@ -87,12 +99,10 @@ const App = () => {
         <option value="D15">D15</option>
       </select>
       <br />
-      <label for="D">
-        Scegli la terza destinazione D, se presente:
-      </label>
+      <label for="D">Scegli la terza destinazione D, se presente:</label>
       <select
         name="D"
-        onChange={e => setObjD({ ...objD, thirdD: e.target.value })}
+        onChange={(e) => setObjD({ ...objD, thirdD: e.target.value })}
       >
         <option value="" />
         <option value="D1">D1</option>
@@ -118,7 +128,7 @@ const App = () => {
       </label>
       <select
         name="R"
-        onChange={e => setObjR({ ...objR, firstR: e.target.value })}
+        onChange={(e) => setObjR({ ...objR, firstR: e.target.value })}
       >
         <option value="" />
         <option value="R1">R1</option>
@@ -136,12 +146,10 @@ const App = () => {
         <option value="R13">R13</option>
       </select>
       <br />
-      <label for="R">
-        Scegli la seconda destinazione R, se presente:
-      </label>
+      <label for="R">Scegli la seconda destinazione R, se presente:</label>
       <select
         name="R"
-        onChange={e => setObjR({ ...objR, secondR: e.target.value })}
+        onChange={(e) => setObjR({ ...objR, secondR: e.target.value })}
       >
         <option value="" />
         <option value="R1">R1</option>
@@ -159,12 +167,10 @@ const App = () => {
         <option value="R13">R13</option>
       </select>
       <br />
-      <label for="R">
-        Scegli la terza destinazione R, se presente:
-      </label>
+      <label for="R">Scegli la terza destinazione R, se presente:</label>
       <select
         name="R"
-        onChange={e => setObjR({ ...objR, thirdR: e.target.value })}
+        onChange={(e) => setObjR({ ...objR, thirdR: e.target.value })}
       >
         <option value="" />
         <option value="R1">R1</option>
@@ -183,28 +189,34 @@ const App = () => {
       </select>
       <br />
       <br />
-      <button onClick={() => cers && formatter(cers)}>
-        Formatta!
-      </button>
+      <button onClick={() => cers && formatter(cers)}>Formatta!</button>
       <br />
       <br />
       <br />
-      {formattedCers &&
+      {formattedCers && (
         <>
-          <button onClick={() => {
-            navigator.clipboard.writeText(JSON.stringify(formattedCers, undefined, 2));
-            alert("Testo copiato correttamente!")
-          }}
-          >Copia</button>
+          <button
+            onClick={() => {
+              copyToClipboard();
+              alert("Testo copiato correttamente!");
+            }}
+          >
+            Copia
+          </button>
           <button onClick={() => window.location.reload()}>Reset</button>
           <br />
           <br />
           <pre>
-            <textarea style={{ width: '50vw', height: '90vh' }}>
+            <textarea
+              ref={textAreaRef}
+              style={{ width: "50vw", height: "90vh" }}
+              // value={JSON.stringify(formattedCers, undefined, 2)}
+            >
               {JSON.stringify(formattedCers, undefined, 2)}
             </textarea>
           </pre>
-        </>}
+        </>
+      )}
     </main>
   );
 };
